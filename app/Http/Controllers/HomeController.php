@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ResetMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Resend\Laravel\Facades\Resend;
 
 class HomeController extends Controller
 {
@@ -21,5 +23,21 @@ class HomeController extends Controller
         }else{
             return view('infrastructure.dashboard');
         }
+    }
+
+    public function testMail(){
+
+        try {
+            Resend::emails()->send([
+                'from' => 'onboarding@resend.dev',
+                'to' => ['ibrahimsherif223@gmail.com'],
+                'subject' => 'hello world',
+                'html' => (new ResetMail())->render(),
+            ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            dd($th->getMessage());
+        }
+        dd('ok');
     }
 }

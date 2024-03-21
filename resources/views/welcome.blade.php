@@ -94,7 +94,7 @@
                 <!-- Slide 1 -->
                 <div class="carousel-item active" style="background-image: url(/guests/img/slide/slide-1.jpg)">
                     <div class="container">
-                        <h2>Welcome to <span>Medicio</span></h2>
+                        <h2>{{ __('Welcome to') }} <span>Medicio</span></h2>
                         <p>Where compassion and healing come together</p>
                         <a href="/login" class="btn-get-started scrollto">LOGIN</a>
                     </div>

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Infrastructure;
 
 use App\Models\User;
 use App\Models\Staff;
@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 
-class StaffController extends Controller
+class DoctorController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,10 +19,19 @@ class StaffController extends Controller
      */
     public function index()
     {
-        $staffs = collect([]);
-
-        // dd($staffs);
-        return view('admin.staffs.index', compact('staffs'));
+        $doctors = User::select([
+            DB::raw('IF(last_name IS NOT NULL, CONCAT(first_name, " ", last_name), first_name) AS name'),
+            'departments.name as department_name',
+            'address',
+            'photo',
+            'users.id',
+            'staffs.id as staff_id'
+        ])
+        ->join('staffs','users.id','=','staffs.user_id')
+        ->join('departments','staffs.department_id','departments.id')
+        ->where('users.role_id',4)
+        ->get();
+        return view('infrastructure.doctors.index',compact('doctors'));
     }
 
     /**
@@ -41,15 +50,9 @@ class StaffController extends Controller
             ->join('regions','divisions.region_id','=','regions.id')
             ->orderBy('name')
             ->pluck('name','id')->toArray();
-        $infrastructures = DB::table('infrastructures')
-            ->pluck('name','id')->toArray();
-        $roles = DB::table('roles')
-            ->where('name','!=','Super Admin')
-            ->where('name','!=','Patient')
-            ->pluck('name','id')->toArray();
         $departments = DB::table('departments')
             ->pluck('name','id')->toArray();
-    return view('admin.staffs.create', compact('subdivisions','infrastructures','roles','departments'));
+        return view('infrastructure.doctors.create',compact('subdivisions','departments'));
     }
 
     /**
@@ -70,11 +73,9 @@ class StaffController extends Controller
             'gender' => ['required', Rule::in(['Male','Female'])],
             'national_identity_card' => 'nullable|unique:users,national_identity_card',
             'address' => 'required',
-            'role' => 'required|exists:roles,id',
             'subdivision' => 'required|exists:subdivisions,id',
-            'infrastructure' => 'required|exists:infrastructures,id',
             'reference' => 'nullable|unique:staffs,reference_id',
-            'department' => 'required_unless:role,2|exists:departments,id',
+            'department' => 'required|exists:departments,id',
             'marital_status' => 'required',
             'joining_date' => 'required|date',
             'salary' => 'required|numeric|gte:0',
@@ -84,7 +85,7 @@ class StaffController extends Controller
         try{
             DB::transaction(function() use ($request){
                 $user = User::create([
-                    'role_id' => $request->get('role'),
+                    'role_id' => 4,
                     'first_name' => $request->get('first_name'),
                     'last_name' => $request->get('last_name'),
                     'telephone' => $request->get('telephone'),
@@ -95,7 +96,7 @@ class StaffController extends Controller
                     'national_identity_card' => $request->get('national_identity_card'),
                     'address' => $request->get('address'),
                     'subdivision_id' => $request->get('subdivision'),
-                    'infrastructure_id' => $request->get('infrastructure'),
+                    'infrastructure_id' => auth()->user()->infrastructure_id,
                 ]);
 
                 Staff::create([
@@ -112,7 +113,7 @@ class StaffController extends Controller
             return redirect()->back()->with('error', (bool)env('APP_DEBUG', false) ? $e->getMessage() : 'An error occured, try again later' );
         }
 
-        return redirect()->route('admin.staff.index')->with('success','Staff added successfully');
+        return redirect()->route('infrastructure.doctor.index')->with('success','Doctor added successfully');
     }
 
     /**
@@ -123,10 +124,7 @@ class StaffController extends Controller
      */
     public function show($id)
     {
-        $staff = Staff::findOrFail($id);
-        $user = User::find($staff->user_id);
-
-        return view('admin.staffs.view',compact('user','staff'));
+        //
     }
 
     /**
@@ -139,6 +137,9 @@ class StaffController extends Controller
     {
         $staff = Staff::findOrFail($id);
         $user = User::find($staff->user_id);
+        if($user->infrastructure_id != auth()->user()->infrastructure_id){
+            abort(403);
+        }
         $subdivisions = DB::table('subdivisions')
             ->select([
                 'subdivisions.id',
@@ -148,16 +149,9 @@ class StaffController extends Controller
             ->join('regions','divisions.region_id','=','regions.id')
             ->orderBy('name')
             ->pluck('name','id')->toArray();
-            $infrastructures = DB::table('infrastructures')
-            ->pluck('name','id')->toArray();
-        $roles = DB::table('roles')
-            ->where('name','!=','Super Admin')
-            ->where('name','!=','Patient')
-            ->pluck('name','id')->toArray();
         $departments = DB::table('departments')
             ->pluck('name','id')->toArray();
-
-        return view('admin.staffs.edit', compact('user','staff','subdivisions','infrastructures','roles','departments'));
+        return view('infrastructure.doctors.edit', compact('user','staff','subdivisions','departments'));
     }
 
     /**
@@ -179,9 +173,7 @@ class StaffController extends Controller
             'gender' => ['required',Rule::in(['Male','Female'])],
             'national_identity_card' => 'nullable|unique:users,national_identity_card,'.$request->staff,
             'address' => 'required',
-            'role' => 'required|exists:roles,id',
             'subdivision' => 'required|exists:subdivisions,id',
-            'infrastructure' => 'required|exists:infrastructures,id',
             'reference' => 'nullable|unique:staffs,reference_id,'.$id,
             'department' => 'nullable|exists:departments,id',
             'marital_status' => 'required',
@@ -193,7 +185,6 @@ class StaffController extends Controller
         try{
             DB::transaction(function() use ($request, $id){
                 $update = [];
-                $update['role_id'] = $request->get('role');
                 $update['first_name'] = $request->get('first_name');
                 $update['last_name'] = $request->get('last_name');
                 $update['telephone'] = $request->get('telephone');
@@ -206,7 +197,6 @@ class StaffController extends Controller
                 $update['national_identity_card'] = $request->get('national_identity_card');
                 $update['address'] = $request->get('address');
                 $update['subdivision_id'] = $request->get('subdivision');
-                $update['infrastructure_id'] = $request->get('infrastructure');
                 $user = User::where('id',$request->staff)->update($update);
 
                 Staff::where('id',$id)->update([
@@ -221,7 +211,7 @@ class StaffController extends Controller
         }catch(\Exception $e){
             return redirect()->back()->with('error', (bool)env('APP_DEBUG', false) ? $e->getMessage() : 'An error occured, try again later' );
         }
-        return redirect()->route('admin.staff.index')->with('success','Staff updated successfully');
+        return redirect()->route('infrastructure.doctor.index')->with('success','Doctor updated successfully');
     }
 
     /**
@@ -233,6 +223,6 @@ class StaffController extends Controller
     public function destroy($id)
     {
         User::where('id',$id)->delete();
-        return redirect()->back()->with('success','Staff deleted successfully');
+        return redirect()->back()->with('success','Doctor deleted successfully');
     }
 }

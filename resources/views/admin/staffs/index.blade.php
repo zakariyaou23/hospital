@@ -50,7 +50,7 @@ Staffs
                                 </div>
                             </div>
                         </div>
-                        <table id="dataTable" class="table table-bordered table-hover">
+                        <table id="staffTable" class="table table-bordered table-hover">
                             <thead>
                                 <tr>
                                     <th>Name</th>
@@ -64,7 +64,7 @@ Staffs
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($staffs as $staff)
+                                {{-- @forelse ($staffs as $staff)
                                     <tr>
                                         <td>{{ $staff->first_name }} {{ $staff->last_name }}</td>
                                         <td>{{ $staff->role_name }}</td>
@@ -116,7 +116,7 @@ Staffs
                                     <tr>
                                         <td colspan="7" class="text-center">No staffs found</td>
                                     </tr>
-                                @endforelse
+                                @endforelse --}}
                             </tbody>
                             <tfoot>
                                 <tr>
@@ -129,9 +129,38 @@ Staffs
                                     <th>Infrastructure</th>
                                     <th>Action</th>
                                 </tr>
-                            </thead>
                             </tfoot>
                         </table>
+                        <div class="modal fade" id="deleteStaffModal" tabindex="-1" role="dialog"
+                            aria-labelledby="exampleModalLabel1" data-backdrop="static" data-keyboard="false">
+                            <div class="modal-dialog modal-dialog-centered " role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title"><i class="fas fa-trash"></i>
+                                            Delete</h4>
+                                        <button type="button" onclick="closeModal();" class="close" data-dismiss="modal"
+                                            aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <form method="POST"
+                                        id="deleteModalForm"
+                                        action="#">
+                                        @csrf
+                                        @method('DELETE')
+                                        <div class="modal-body p-4">
+                                            <p>Are you sure ?</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" onclick="closeModal();" class="btn btn-light"
+                                                data-dismiss="modal">No</button>
+                                            <button type="submit" class="btn btn-danger"><i
+                                                    class="fas fa-trash"></i> Yes, Proceed</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <!-- /.card-body -->
                 </div>
@@ -142,15 +171,62 @@ Staffs
 @push('special-scripts')
     <script>
         $(function() {
-            $('#dataTable').DataTable({
-                "paging": true,
-                "lengthChange": false,
-                "searching": false,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
+            $('#staffTable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                url: "{{ route('ajax.admin.staffs') }}",
+                },
+                columns: [
+                    {
+                        data: 'name',
+                        name: 'users.first_name'
+                    },
+                    {
+                        data: 'role_name',
+                        name: 'roles.name'
+                    },
+                    {
+                        data: 'address',
+                        name: 'users.address'
+                    },
+                    {
+                        data: 'telephone',
+                        name: 'users.telephone'
+                    },
+                    {
+                        data: 'email',
+                        name: 'users.email'
+                    },
+                    {
+                        data: 'department_name',
+                        name: 'departments.name'
+                    },
+                    {
+                        data: 'infrastructure_name',
+                        name: 'infrastructures.name'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false,
+                    }
+                ],
+                paging: true,
+                lengthChange: false,
+                info: true,
             });
         });
+
+        function deleteStaff(id){
+            console.log("Staff ID: ",id);
+            $('#deleteModalForm').attr('action','/admin/staff/'+id);
+            $('#deleteStaffModal').modal('show');
+        }
+
+        function closeModal(){
+            $('#deleteModalForm').attr('action','#');
+        }
     </script>
 @endpush

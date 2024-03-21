@@ -52,7 +52,7 @@
                         </div>
                         <div class="form-group col-md-6">
                             <label for="locationField">Location</label>
-                            <input type="text" value="{{ old('location')??$infrastructure->location }}" class="form-control @error('location') is-invalid @enderror" id="locationField" name="location" placeholder="Enter phone">
+                            <input type="text" value="{{ old('location')??$infrastructure->location }}" class="form-control @error('location') is-invalid @enderror" id="locationField" name="location" placeholder="Enter location">
                             @error('location')
                                 <div class="invalid-feedback">
                                   {{ $message }}

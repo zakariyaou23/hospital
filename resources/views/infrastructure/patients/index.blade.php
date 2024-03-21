@@ -33,7 +33,7 @@
             </div>
         </div>
     </div>
-    <div id="delete_patient" class="modal fade delete-modal" role="dialog">
+    <div id="deleteModal" class="modal fade delete-modal" role="dialog">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-body text-center">
@@ -50,17 +50,24 @@
 @endsection
 @push('special-scripts')
     <script>
+        function deletePatient(id){
+            $('#deleteForm').attr('action','/infrastructure/patient/'+id);
+            $('#deleteModal').modal('show');
+        }
+        function closeModal(){
+            $('#deleteForm').attr('action','#');
+        }
         $(function(){
             $('#patientTable').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
-                url: "{{ route('ajax.patients') }}",
+                url: "{{ route('ajax.infrastructure.patients') }}",
                 },
                 columns: [
                     {
                         data: 'name',
-                        name: 'name'
+                        name: 'first_name'
                     },
                     {
                         data: 'date_of_birth',
@@ -87,11 +94,5 @@
                 ]
             });
         });
-        // $(document).ready(function(){
-        //     $('body').on('click','.deletePatient', function(e){
-        //         var id = $(this).data('id');
-        //         console.log(id);
-        //     });
-        // });
     </script>
 @endpush

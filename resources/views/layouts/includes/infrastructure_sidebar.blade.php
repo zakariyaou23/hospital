@@ -6,37 +6,35 @@
                 <li class="{{ request()->routeIs('home') ? 'active':'' }}">
                     <a href="/home"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a>
                 </li>
-                <li>
-                    <a href="doctors.html"><i class="fa fa-user-md"></i> <span>Doctors</span></a>
+                <li class="{{ request()->routeIs('infrastructure.doctor.*') ? 'active':'' }}">
+                    <a href="/infrastructure/doctor"><i class="fa fa-user-md"></i> <span>Doctors</span></a>
                 </li>
                 <li class="{{ request()->routeIs('infrastructure.patient.*') ? 'active':'' }}">
                     <a href="/infrastructure/patient"><i class="fa fa-wheelchair"></i> <span>Patients</span></a>
                 </li>
-                <li>
-                    <a href="appointments.html"><i class="fa fa-calendar"></i> <span>Appointments</span></a>
+                <li class="{{ request()->routeIs('infrastructure.appointment.*') ? 'active':'' }}">
+                    <a href="/infrastructure/appointment"><i class="fa fa-calendar"></i> <span>Appointments</span></a>
                 </li>
-                <li>
+                {{-- <li>
                     <a href="schedule.html"><i class="fa fa-calendar-check-o"></i> <span>Doctor Schedule</span></a>
-                </li>
-                <li>
-                    <a href="departments.html"><i class="fa fa-hospital-o"></i> <span>Departments</span></a>
+                </li> --}}
+                <li class="{{ request()->routeIs('infrastructure.department.*') ? 'active':'' }}">
+                    <a href="/infrastructure/department"><i class="fa fa-hospital-o"></i> <span>Departments</span></a>
                 </li>
                 <li class="submenu">
                     <a href="#"><i class="fa fa-user"></i> <span> Human Resource </span> <span class="menu-arrow"></span></a>
                     <ul style="display: none;">
-                        <li><a href="employees.html">Staff List</a></li>
-                        <li><a href="leaves.html">Leaves</a></li>
-                        <li><a href="attendance.html">Attendance</a></li>
+                        <li><a class="{{ request()->routeIs('infrastructure.staff.*') ? 'active':'' }}" href="/infrastructure/staff">Staff List</a></li>
+                        <li><a class="{{ request()->routeIs('infrastructure.leave.*') ? 'active':'' }}" href="/infrastructure/leave">Leaves</a></li>
+                        <li><a class="{{ request()->routeIs('infrastructure.attendance.*') ? 'active':'' }}" href="/infrastructure/attendance">Attendance</a></li>
                     </ul>
                 </li>
                 <li class="submenu">
                     <a href="#"><i class="fa fa-money"></i> <span> Accounts </span> <span class="menu-arrow"></span></a>
                     <ul style="display: none;">
-                        <li><a href="invoices.html">Invoices</a></li>
-                        <li><a href="payments.html">Payments</a></li>
-                        <li><a href="expenses.html">Expenses</a></li>
-                        <li><a href="taxes.html">Taxes</a></li>
-                        <li><a href="provident-fund.html">Provident Fund</a></li>
+                        <li><a class="{{ request()->routeIs('infrastructure.invoice.*') ? 'active':'' }}" href="/infrastructure/invoice">Invoices</a></li>
+                        <li><a class="{{ request()->routeIs('infrastructure.attendance.*') ? 'active':'' }}" href="/infrastructure/department">Payments</a></li>
+                        <li><a class="{{ request()->routeIs('infrastructure.expense.*') ? 'active':'' }}" href="/infrastructure/expense">Expenses</a></li>
                     </ul>
                 </li>
                 <li class="submenu">

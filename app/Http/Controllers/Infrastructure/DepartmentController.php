@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Infrastructure;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class StaffController extends Controller
+class DepartmentController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +14,7 @@ class StaffController extends Controller
      */
     public function index()
     {
-        return view('infrastructure.staffs.index');
+        return view('infrastructure.departments.index');
     }
 
     /**
