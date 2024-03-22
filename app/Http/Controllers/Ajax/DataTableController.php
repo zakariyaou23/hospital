@@ -38,6 +38,41 @@ class DataTableController extends Controller
                     ->make(true);
     }
 
+    public function getInfrastructureStaffs(Request $request){
+        $infrastructure = $request->get('infrastructure');
+        $staffs = Staff::select([
+            'staffs.id as staff_id',
+            DB::raw('IF(users.last_name IS NOT NULL, CONCAT(users.first_name, " ", users.last_name), users.first_name) AS name'),
+            'users.address',
+            'users.telephone',
+            'users.id',
+            'users.email',
+            'users.infrastructure_id',
+            'departments.name as department_name',
+            'infrastructures.name as infrastructure_name',
+            'roles.name as role_name'
+            ])
+            ->leftJoin('departments','staffs.department_id','=','departments.id')
+            ->join('users','staffs.user_id','=','users.id')
+            ->join('roles','users.role_id','=','roles.id')
+            ->join('infrastructures','users.infrastructure_id','=','infrastructures.id')
+            ->when($infrastructure, function($query,$infrastructure){
+                return $query->where('users.infrastructure_id',$infrastructure);
+            });
+        return DataTables::of($staffs)
+            ->addColumn('action', function($data){
+                return '
+                <div class="btn-group">
+                    <a href="/infrastructure/staff/'.$data->staff_id.'/edit"
+                        class="text-primary w-50 mr-2"><i class="fas fa-edit"></i></a>
+                    <a href="" onclick="event.preventDefault(); deleteStaff('.$data->id.');" class="text-danger w-50"><i
+                            class="fas fa-trash"></i></a>
+                </div>';
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+
     public function getAdminStaffs(Request $request){
         $infrastructure = $request->get('infrastructure');
         $staffs = Staff::select([
