@@ -61,7 +61,7 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label for="dobField">Date of Birth <span class="text-danger">*</span></label>
-                            <div class="cal-icon">
+                            <div class="@error('date_of_birth') @else cal-icon @enderror">
                                 <input type="text" value="{{ old('date_of_birth')??$user->date_of_birth }}" class="form-control @error('date_of_birth') is-invalid @enderror datetimepicker" id="dobField" name="date_of_birth">
                                 @error('date_of_birth')
                                     <div class="invalid-feedback">
@@ -186,12 +186,14 @@
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="joinField">Date of Joining <span class="text-danger">*</span></label>
-                                <input type="text" value="{{ old('joining_date')??$staff->joining_date }}" class="form-control @error('joining_date') is-invalid @enderror datetimepicker" id="dobField" name="joining_date">
-                                @error('joining_date')
+                                <div class="@error('joining_date') @else cal-icon @enderror">
+                                    <input type="text" value="{{ old('joining_date')??$staff->joining_date }}" class="form-control @error('joining_date') is-invalid @enderror datetimepicker" id="dobField" name="joining_date">
+                                    @error('joining_date')
                                     <div class="invalid-feedback">
-                                      {{ $message }}
+                                        {{ $message }}
                                     </div>
-                                @enderror
+                                    @enderror
+                                </div>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="salaryField">Salary (FCFA) <span class="text-danger">*</span></label>

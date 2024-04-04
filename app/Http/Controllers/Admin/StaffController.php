@@ -49,7 +49,7 @@ class StaffController extends Controller
             ->pluck('name','id')->toArray();
         $departments = DB::table('departments')
             ->pluck('name','id')->toArray();
-    return view('admin.staffs.create', compact('subdivisions','infrastructures','roles','departments'));
+        return view('admin.staffs.create', compact('subdivisions','infrastructures','roles','departments'));
     }
 
     /**
@@ -148,7 +148,7 @@ class StaffController extends Controller
             ->join('regions','divisions.region_id','=','regions.id')
             ->orderBy('name')
             ->pluck('name','id')->toArray();
-            $infrastructures = DB::table('infrastructures')
+        $infrastructures = DB::table('infrastructures')
             ->pluck('name','id')->toArray();
         $roles = DB::table('roles')
             ->where('name','!=','Super Admin')

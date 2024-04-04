@@ -56,8 +56,13 @@ Route::group(['middleware' => ['auth']],function () {
 
     Route::group(['prefix' => '/ajax', 'as' => 'ajax.'],function () {
 
+        Route::get('/doctors', [App\Http\Controllers\Ajax\AjaxController::class, 'getDoctorsPerDepartment'])->name('select.doctors');
+
         Route::group(['prefix' => '/infrastructure', 'as' => 'infrastructure.'],function () {
             Route::get('/patients', [App\Http\Controllers\Ajax\DataTableController::class, 'getInfrastructurePatients'])->name('patients');
+            Route::get('/appointments', [App\Http\Controllers\Ajax\DataTableController::class, 'getInfrastructureAppointments'])->name('appointments');
+            Route::get('/departments', [App\Http\Controllers\Ajax\DataTableController::class, 'getInfrastructureDepartments'])->name('departments');
+            Route::get('/staffs', [App\Http\Controllers\Ajax\DataTableController::class, 'getInfrastructureStaffs'])->name('staffs');
         });
 
         Route::group(['prefix' => '/admin', 'as' => 'admin.'],function () {

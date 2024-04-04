@@ -13,39 +13,25 @@
         </div>
     </div>
     <div class="row filter-row">
-        <div class="col-sm-6 col-md-3">
-            <div class="form-group form-focus">
-                <label class="focus-label">Staff ID</label>
-                <input type="text" class="form-control floating">
-            </div>
-        </div>
-        <div class="col-sm-6 col-md-3">
-            <div class="form-group form-focus">
-                <label class="focus-label">Staff Name</label>
-                <input type="text" class="form-control floating">
-            </div>
-        </div>
-        <div class="col-sm-6 col-md-3">
+        <div class="col-sm-6 col-md-9">
             <div class="form-group form-focus select-focus">
                 <label class="focus-label">Role</label>
-                <select class="select floating">
-                    <option>Select Role</option>
-                    <option>Nurse</option>
-                    <option>Pharmacist</option>
-                    <option>Laboratorist</option>
-                    <option>Accountant</option>
-                    <option>Receptionist</option>
+                <select class="select floating" id="roles">
+                    <option value="">Select Role</option>
+                    @foreach ($roles as $id => $name)
+                        <option value="{{ $id }}">{{ $name }}</option>
+                    @endforeach
                 </select>
             </div>
         </div>
         <div class="col-sm-6 col-md-3">
-            <a href="#" class="btn btn-success btn-block"> Search </a>
+            <a href="#" onclick="event.preventDefault(); onChange();" class="btn btn-success btn-block"> Search </a>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
             <div class="table-responsive">
-                <table class="table table-striped custom-table">
+                <table id="staffTable" class="table table-striped custom-table">
                     <thead>
                         <tr>
                             <th style="min-width:200px;">Name</th>
@@ -57,116 +43,93 @@
                             <th class="text-right">Action</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <img width="28" height="28" src="/apps/assets/img/user.jpg" class="rounded-circle" alt=""> <h2>Albina Simonis</h2>
-                            </td>
-                            <td>NS-0001</td>
-                            <td>albinasimonis@example.com</td>
-                            <td>828-634-2744</td>
-                            <td>7 May 2015</td>
-                            <td>
-                                <span class="custom-badge status-green">Nurse</span>
-                            </td>
-                            <td class="text-right">
-                                <div class="dropdown dropdown-action">
-                                    <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
-                                    <div class="dropdown-menu dropdown-menu-right">
-                                        <a class="dropdown-item" href="#"><i class="fa fa-pencil m-r-5"></i> Edit</a>
-                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_employee"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <img width="28" height="28" src="/apps/assets/img/user.jpg" class="rounded-circle" alt=""> <h2>Cristina Groves</h2>
-                            </td>
-                            <td>DR-0001</td>
-                            <td>cristinagroves@example.com</td>
-                            <td>928-344-5176</td>
-                            <td>1 Jan 2013</td>
-                            <td>
-                                <span class="custom-badge status-blue">Doctor</span>
-                            </td>
-                            <td class="text-right">
-                                <div class="dropdown dropdown-action">
-                                    <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
-                                    <div class="dropdown-menu dropdown-menu-right">
-                                        <a class="dropdown-item" href="#"><i class="fa fa-pencil m-r-5"></i> Edit</a>
-                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_employee"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <img width="28" height="28" src="/apps/assets/img/user.jpg" class="rounded-circle" alt=""> <h2>Mary Mericle</h2>
-                            </td>
-                            <td>SF-0003</td>
-                            <td>marymericle@example.com</td>
-                            <td>603-831-4983</td>
-                            <td>27 Dec 2017</td>
-                            <td>
-                                <span class="custom-badge status-grey">Accountant</span>
-                            </td>
-                            <td class="text-right">
-                                <div class="dropdown dropdown-action">
-                                    <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
-                                    <div class="dropdown-menu dropdown-menu-right">
-                                        <a class="dropdown-item" href="#"><i class="fa fa-pencil m-r-5"></i> Edit</a>
-                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_employee"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <img width="28" height="28" src="/apps/assets/img/user.jpg" class="rounded-circle" alt=""> <h2>Haylie Feeney</h2>
-                            </td>
-                            <td>SF-0002</td>
-                            <td>hayliefeeney@example.com</td>
-                            <td>616-774-4962</td>
-                            <td>21 Apr 2017</td>
-                            <td>
-                                <span class="custom-badge status-grey">Laboratorist</span>
-                            </td>
-                            <td class="text-right">
-                                <div class="dropdown dropdown-action">
-                                    <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
-                                    <div class="dropdown-menu dropdown-menu-right">
-                                        <a class="dropdown-item" href="#"><i class="fa fa-pencil m-r-5"></i> Edit</a>
-                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_employee"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <img width="28" height="28" src="/apps/assets/img/user.jpg" class="rounded-circle" alt=""> <h2>Zoe Butler</h2>
-                            </td>
-                            <td>SF-0001</td>
-                            <td>zoebutler@example.com</td>
-                            <td>444-555-9999</td>
-                            <td>19 May 2012</td>
-                            <td>
-                                <span class="custom-badge status-grey">Pharmacist</span>
-                            </td>
-                            <td class="text-right">
-                                <div class="dropdown dropdown-action">
-                                    <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
-                                    <div class="dropdown-menu dropdown-menu-right">
-                                        <a class="dropdown-item" href="#"><i class="fa fa-pencil m-r-5"></i> Edit</a>
-                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_employee"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
+                    <tbody</tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+    <div id="deleteModal" class="modal fade delete-modal" role="dialog">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form action="#" id="deleteForm">
+                    @csrf
+                    @method('DELETE')
+                    <div class="modal-body text-center">
+                        <img src="/apps/assets/img/sent.png" alt="" width="50" height="46">
+                        <h3>Are you sure you want to delete this department?</h3>
+                        <div class="m-t-20"> <a href="#" class="btn btn-white" data-dismiss="modal">Close</a>
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
 @endsection
+@push('special-scripts')
+    <script>
+        function deleteStaff(id){
+            $('#deleteForm').attr('action','/infrastructure/staff/'+id);
+            $('#deleteModal').modal('show');
+        }
+        function closeModal(){
+            $('#deleteForm').attr('action','#');
+        }
+        function onChange(){
+            var role = $('#roles').val();
+            if($.fn.dataTable.isDataTable('#staffTable')){
+                console.log("Loaded");
+                if(role){
+                    $('#staffTable').DataTable().ajax.url(`{{ route('ajax.infrastructure.staffs') }}?role=`+role).load();
+                }else{
+                    $('#staffTable').DataTable().ajax.url(`{{ route('ajax.infrastructure.staffs') }}`).load();
+                }
+            }else{
+                console.log("Not loaded");
+            }
+
+        }
+        $(function(){
+            $('#staffTable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                url: "{{ route('ajax.infrastructure.staffs') }}",
+                },
+                columns: [
+                    {
+                        data: 'name',
+                        name: 'users.first_name'
+                    },
+                    {
+                        data: 'id',
+                        name: 'id'
+                    },
+                    {
+                        data: 'email',
+                        name: 'users.email'
+                    },
+                    {
+                        data: 'telephone',
+                        name: 'users.telephone'
+                    },
+                    {
+                        data: 'joining_date',
+                        name: 'joining_date'
+                    },
+                    {
+                        data: 'role_name',
+                        name: 'roles.name'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false,
+                    }
+                ]
+            });
+        });
+    </script>
+@endpush

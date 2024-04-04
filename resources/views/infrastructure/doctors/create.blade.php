@@ -59,7 +59,7 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label for="dobField">Date of Birth <span class="text-danger">*</span></label>
-                            <div class="cal-icon">
+                            <div class="@error('date_of_birth') @else cal-icon @enderror">
                                 <input type="text" value="{{ old('date_of_birth') }}" class="form-control @error('date_of_birth') is-invalid @enderror datetimepicker" id="dobField" name="date_of_birth">
                                 @error('date_of_birth')
                                     <div class="invalid-feedback">
@@ -74,7 +74,7 @@
                             <label class="gen-label">Gender <span class="text-danger">*</span></label>
                             <div class="form-check-inline ">
                                 <label class="form-check-label">
-                                    <input type="radio" name="gender" value="Male" class="form-check-input is-invalid" {{ old('gender') == 'Male' ? 'checked':'' }}>Male
+                                    <input type="radio" name="gender" value="Male" class="form-check-input @error('gender') is-invalid @enderror" {{ old('gender') == 'Male' ? 'checked':'' }}>Male
                                 </label>
                             </div>
                             <div class="form-check-inline">
@@ -184,12 +184,14 @@
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="joinField">Date of Joining <span class="text-danger">*</span></label>
-                                <input type="text" value="{{ old('joining_date') }}" class="form-control @error('joining_date') is-invalid @enderror datetimepicker" id="dobField" name="joining_date">
-                                @error('joining_date')
-                                    <div class="invalid-feedback">
-                                      {{ $message }}
-                                    </div>
-                                @enderror
+                                <div class="@error('joining_date') @else cal-icon @enderror">
+                                    <input type="text" value="{{ old('joining_date') }}" class="form-control @error('joining_date') is-invalid @enderror datetimepicker" id="dobField" name="joining_date">
+                                    @error('joining_date')
+                                        <div class="invalid-feedback">
+                                          {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="salaryField">Salary (FCFA) <span class="text-danger">*</span></label>
@@ -203,7 +205,7 @@
                             <div class="form-group col-md-6">
                                 <label for="contractField">Contract Type <span class="text-danger">*</span></label>
                                 <select name="contract_type" class="form-control @error('contract_type') is-invalid @enderror select2" style="width: 100%;" id="contractField">
-                                    <option value="" selected>{{ __("Select") }}</option>
+                                    <option value="">--{{ __("Select") }}--</option>
                                     <option value="Full Time" {{ old('contract_type') == 'Full Time'?'selected':'' }}>Full Time</option>
                                     <option value="Part Time" {{ old('contract_type') == 'Part Time'?'selected':'' }}>Part Time</option>
                                 </select>

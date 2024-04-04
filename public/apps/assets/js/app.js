@@ -144,6 +144,12 @@ $(document).ready(function($) {
 		});
 	}
 
+    if($('.timepicker').length > 0) {
+		$('.timepicker').datetimepicker({
+            format: 'HH:mm'
+		});
+	}
+
 	// Datatable
 	if($('.datatable').length > 0) {
 		$('.datatable').DataTable({

@@ -1,17 +1,17 @@
 @extends('layouts.infrastructure')
 @section('page')
-    Add Patient
+    Add Staff
 @endsection
 @section('content')
 <div class="content">
     <div class="row">
         <div class="col-lg-8 offset-lg-2">
-            <h4 class="page-title">Add Patient</h4>
+            <h4 class="page-title">Add Staff</h4>
         </div>
     </div>
     <div class="row">
         <div class="col-lg-8 offset-lg-2">
-            <form action="{{ route('infrastructure.patient.store') }}" method="POST">
+            <form action="{{ route('infrastructure.staff.store') }}" method="POST">
                 @csrf
                 <div class="row">
                     <div class="col-sm-6">
@@ -59,7 +59,7 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <label for="dobField">Date of Birth <span class="text-danger">*</span></label>
-                            <div class="cal-icon">
+                            <div class="@error('date_of_birth') @else cal-icon @enderror">
                                 <input type="text" value="{{ old('date_of_birth') }}" class="form-control @error('date_of_birth') is-invalid @enderror datetimepicker" id="dobField" name="date_of_birth">
                                 @error('date_of_birth')
                                     <div class="invalid-feedback">
@@ -74,7 +74,7 @@
                             <label class="gen-label">Gender <span class="text-danger">*</span></label>
                             <div class="form-check-inline ">
                                 <label class="form-check-label">
-                                    <input type="radio" name="gender" value="Male" class="form-check-input  @error('gender') is-invalid @enderror" {{ old('gender') == 'Male' ? 'checked':'' }}>Male
+                                    <input type="radio" name="gender" value="Male" class="form-check-input @error('gender') is-invalid @enderror" {{ old('gender') == 'Male' ? 'checked':'' }}>Male
                                 </label>
                             </div>
                             <div class="form-check-inline">
@@ -144,66 +144,74 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="form-group col-md-6">
-                                <label for="bloodGroup">Blood Group</label>
-                                <select class="form-control @error('blood_group') is-invalid @enderror select2" style="width: 100%;" name="blood_group" id="bloodGroup">
-                                    <option value="">--Select--</option>
-                                    <option value="O+" {{ old('blood_group') == 'O+' ? 'selected':'' }}>O+</option>
-                                    <option value="A+" {{ old('blood_group') == 'A+' ? 'selected':'' }}>A+</option>
-                                    <option value="B+" {{ old('blood_group') == 'B+' ? 'selected':'' }}>B+</option>
-                                    <option value="AB+" {{ old('blood_group') == 'AB+' ? 'selected':'' }}>AB+</option>
-                                    <option value="O-" {{ old('blood_group') == 'O-' ? 'selected':'' }}>O-</option>
-                                    <option value="A-" {{ old('blood_group') == 'A-' ? 'selected':'' }}>A-</option>
-                                    <option value="B-" {{ old('blood_group') == 'B-' ? 'selected':'' }}>B-</option>
-                                    <option value="AB-" {{ old('blood_group') == 'AB-' ? 'selected':'' }}>AB-</option>
+                                <label for="role">Role <span class="text-danger">*</span></label>
+                                <select class="form-control @error('role') is-invalid @enderror select2" style="width: 100%;" name="role" id="role">
+                                    <option value="" selected>--Select--</option>
+                                    @foreach ($roles as $id => $name)
+                                        <option value="{{ $id }}" {{ $id == old('role') ? 'selected':'' }}>{{ $name }}</option>
+                                    @endforeach
                                 </select>
-                                @error('blood_group')
+                                @error('role')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>
                                 @enderror
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="tensionField">Tension(Pa) <span class="text-danger">*</span></label>
-                                <input type="number" value="{{ old('tension') }}" class="form-control @error('tension') is-invalid @enderror" id="tensionField" name="tension">
-                                @error('tension')
+                                <label for="referenceField">Reference ID</label>
+                                <input type="number" value="{{ old('reference') }}" class="form-control @error('reference') is-invalid @enderror" id="referenceField" name="reference" placeholder="Enter any referral ID">
+                                @error('reference')
                                     <div class="invalid-feedback">
-                                      {{ $message }}
+                                        {{ $message }}
                                     </div>
                                 @enderror
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="heightField">Height(m) <span class="text-danger">*</span></label>
-                                <input type="number" value="{{ old('height') }}" class="form-control @error('height') is-invalid @enderror" id="heightField" name="height">
-                                @error('height')
+                                <label for="maritalStatusField">Marital Status <span class="text-danger">*</span></label>
+                                <select name="marital_status" class="form-control  @error('marital_status') is-invalid @enderror select2" style="width: 100%;" id="maritalStatusField">
+                                    <option value="" selected>{{ __("Select") }}</option>
+                                    <option value="Single" {{ old('marital_status') == 'Single' ? 'selected':'' }}>{{ __("Single") }}</option>
+                                    <option value="Married" {{ old('marital_status') == 'Married' ? 'selected':'' }}>{{ __("Married") }}</option>
+                                    <option value="Widowed" {{ old('marital_status') == 'Widowed' ? 'selected':'' }}>{{ __("Widowed") }}</option>
+                                    <option value="Separated" {{ old('marital_status') == 'Separated' ? 'selected':'' }}>{{ __("Separated") }}</option>
+                                    <option value="Not Specified" {{ old('marital_status') == 'Not Specified' ? 'selected':'' }}>{{ __("Not Specified") }}</option>
+                                </select>
+                                @error('marital_status')
                                     <div class="invalid-feedback">
-                                      {{ $message }}
+                                        {{ $message }}
                                     </div>
                                 @enderror
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="weightField">Weight(kg) <span class="text-danger">*</span></label>
-                                <input type="number" value="{{ old('weight') }}" class="form-control @error('weight') is-invalid @enderror" id="weightField" name="weight">
-                                @error('weight')
+                                <label for="joinField">Date of Joining <span class="text-danger">*</span></label>
+                                <div class="@error('joining_date') @else cal-icon @enderror">
+                                    <input type="text" value="{{ old('joining_date') }}" class="form-control @error('joining_date') is-invalid @enderror datetimepicker" id="dobField" name="joining_date">
+                                    @error('joining_date')
+                                        <div class="invalid-feedback">
+                                          {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="salaryField">Salary (FCFA) <span class="text-danger">*</span></label>
+                                <input type="number" value="{{ old('salary') }}" class="form-control @error('salary') is-invalid @enderror" id="salaryField" name="salary" placeholder="Enter Salary">
+                                @error('salary')
                                     <div class="invalid-feedback">
-                                      {{ $message }}
+                                        {{ $message }}
                                     </div>
                                 @enderror
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="allergiesField" class="form-label">Allergies <span class="text-danger">*</span></label>
-                                <textarea class="form-control @error('allergies') is-invalid @enderror" id="allergiesField" name="allergies" rows="3">{{ old('allergies') }}</textarea>
-                                @error('allergies')
+                                <label for="contractField">Contract Type <span class="text-danger">*</span></label>
+                                <select name="contract_type" class="form-control @error('contract_type') is-invalid @enderror select2" style="width: 100%;" id="contractField">
+                                    <option value="">--{{ __("Select") }}--</option>
+                                    <option value="Full Time" {{ old('contract_type') == 'Full Time'?'selected':'' }}>Full Time</option>
+                                    <option value="Part Time" {{ old('contract_type') == 'Part Time'?'selected':'' }}>Part Time</option>
+                                </select>
+                                @error('contract_type')
                                     <div class="invalid-feedback">
-                                      {{ $message }}
-                                    </div>
-                                @enderror
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="noteField" class="form-label">Previous Note</label>
-                                <textarea class="form-control @error('previous_note') is-invalid @enderror" id="noteField" name="previous_note" rows="3">{{ old('previous_note') }}</textarea>
-                                @error('previous_note')
-                                    <div class="invalid-feedback">
-                                      {{ $message }}
+                                        {{ $message }}
                                     </div>
                                 @enderror
                             </div>

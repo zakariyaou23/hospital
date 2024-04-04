@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Infrastructure;
 
-use App\Http\Controllers\Controller;
+use App\Models\Department;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class DepartmentController extends Controller
 {
@@ -24,7 +25,7 @@ class DepartmentController extends Controller
      */
     public function create()
     {
-        //
+        return view('infrastructure.departments.create');
     }
 
     /**
@@ -35,7 +36,17 @@ class DepartmentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|unique:departments,name',
+            'description' => 'nullable'
+        ]);
+
+        Department::create([
+            'name' => $request->get('name'),
+            'description' => $request->get('description'),
+        ]);
+
+        return redirect()->route('infrastructure.department.index')->with('success','Department created successfully');
     }
 
     /**
@@ -57,7 +68,8 @@ class DepartmentController extends Controller
      */
     public function edit($id)
     {
-        //
+        $department = Department::findOrFail($id);
+        return view('infrastructure.departments.edit',compact('department'));
     }
 
     /**
@@ -69,7 +81,17 @@ class DepartmentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'name' => 'required|unique:departments,name,' . $id,
+            'description' => 'nullable'
+        ]);
+
+        Department::where('id',$id)->update([
+            'name' => $request->get('name'),
+            'description' => $request->get('description'),
+        ]);
+
+        return redirect()->route('infrastructure.department.index')->with('success','Department updated successfully');
     }
 
     /**
@@ -80,6 +102,8 @@ class DepartmentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Department::where('id',$id)->delete();
+
+        return redirect()->back()->with('success','Department deleted successfully');
     }
 }
