@@ -110,7 +110,9 @@ class PatientController extends Controller
      */
     public function show($id)
     {
-        //
+        $patient = Patient::findOrFail($id);
+        $user = User::find($patient->user_id);
+        return view('infrastructure.patients.view',compact('user','patient'));
     }
 
     /**

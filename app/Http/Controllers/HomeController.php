@@ -2,13 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Mail\ResetMail;
+use App\Models\Patient;
+use App\Models\Appointment;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Resend\Laravel\Facades\Resend;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class HomeController extends Controller
 {
+    public function welcome(){
+        $departments = DB::table('departments')->pluck('name','id')->toArray();
+        return view('welcome', compact('departments'));
+    }
+
     public function index(){
 
         // for admin
@@ -23,6 +34,72 @@ class HomeController extends Controller
         }else{
             return view('infrastructure.dashboard');
         }
+    }
+
+    public function takeAppointment(Request $request){
+        $validator = Validator::make($request->all(),[
+            'first_name' => 'required|string',
+            'last_name' => 'nullable|string',
+            'email' => 'required|string|email',
+            'telephone' => 'required',
+            'gender' => ['required',Rule::in(['Male','Female'])],
+            'address' => 'required',
+            'doctor' => 'required|exists:users,id',
+            'department' => 'required|exists:departments,id',
+            'date' => 'required|date',
+        ]);
+
+        if($validator->fails()){
+            $errorBag = [];
+            foreach($validator->errors()->getMessages() as $index => $error){
+                foreach($error as $err){
+                    $errorBag[] = $err;
+                }
+            }
+            return response()->json($errorBag,403);
+        }
+        $doctor = User::find($request->get('doctor'));
+        $user = User::where('email',$request->get('email'))->first();
+
+        if($user){
+            if($user->role_id != 3){
+                return response()->json(['This mail cannot make an appointment'],403);
+            }
+        }else{
+            $user = User::create([
+                'role_id' => 3,
+                'first_name' => $request->get('first_name'),
+                'last_name' => $request->get('last_name'),
+                'telephone' => $request->get('telephone'),
+                'email' => $request->get('email'),
+                'date_of_birth' => date('Y-m-d'),
+                'gender' => $request->get('gender'),
+                'password' => Hash::make('password'),
+                'address' => $request->get('address'),
+                'subdivision_id' => 202,
+                'infrastructure_id' => $doctor->infrastructure_id
+            ]);
+            Patient::create([
+                'user_id' => $user->id,
+                'allergies' =>"None",
+                'tension' => "0/0",
+                'height' => 0,
+                'weight' => 0,
+                'previous_note' => "None",
+            ]);
+        }
+
+        Appointment::create([
+            'patient_id' => $user->id,
+            'doctor_id' => $doctor->id,
+            'department_id' => $request->get('department'),
+            'date' => $request->get('date'),
+            'status' => 'pending',
+            'time' => date('H:i'),
+            'description' => $request->get('description'),
+        ]);
+
+        return response()->json(['success']);
     }
 
     public function testMail(){

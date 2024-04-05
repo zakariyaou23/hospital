@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->enum('blood_group',['A+','B+','O+','AB+','A-','B-','O-','AB-'])->nullable();
             $table->string('allergies');
-            $table->float('tension');
+            $table->string('tension');
             $table->float('height');
             $table->float('weight');
             $table->longText('previous_note')->nullable();

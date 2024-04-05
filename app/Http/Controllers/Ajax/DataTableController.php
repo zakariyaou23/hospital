@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Ajax;
 use DataTables;
 use App\Models\User;
 use App\Models\Staff;
+use App\Models\Transfer;
 use App\Models\Department;
 use App\Models\Appointment;
 use Illuminate\Http\Request;
@@ -32,6 +33,7 @@ class DataTableController extends Controller
                             <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
                             <div class="dropdown-menu dropdown-menu-right">
                                 <a class="dropdown-item" href="/infrastructure/patient/'.$data->patient_id.'/edit"><i class="fa fa-pencil m-r-5"></i> Edit</a>
+                                <a class="dropdown-item" href="/infrastructure/patient/'.$data->patient_id.'"><i class="fa fa-eye m-r-5"></i> View</a>
                                 <a class="dropdown-item" href="#" onclick="event.preventDefault(); deletePatient('.$data->id.');"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
                             </div>
                         </div>';
@@ -62,6 +64,56 @@ class DataTableController extends Controller
                             <div class="dropdown-menu dropdown-menu-right">
                                 <a class="dropdown-item" href="/infrastructure/appointment/'.$data->id.'/edit"><i class="fa fa-pencil m-r-5"></i> Edit</a>
                                 <a class="dropdown-item" href="#" onclick="event.preventDefault(); deleteAppointment('.$data->id.');"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
+                            </div>
+                        </div>';
+                    })
+                    ->rawColumns(['status','action'])
+                    ->make(true);
+    }
+
+    public function getInfrastructureTransfers(Request $request){
+        $status = $request->get('status');
+        $transfers = Transfer::select([
+            DB::raw('IF(initiators.last_name IS NOT NULL, CONCAT(initiators.first_name, " ", initiators.last_name), initiators.first_name) AS initiator_name'),
+            DB::raw('IF(recipients.last_name IS NOT NULL, CONCAT(recipients.first_name, " ", recipients.last_name), recipients.first_name) AS recipient_name'),
+            DB::raw('IF(patients.last_name IS NOT NULL, CONCAT(patients.first_name, " ", patients.last_name), patients.first_name) AS patient_name'),
+            'transfers.*',
+            'from_instrastructures.name as from_instrastructure',
+            'to_instrastructures.name as to_instrastructure',
+        ])
+        ->leftJoin('users AS recipients', 'transfers.recipient_id', '=', 'recipients.id')
+        ->join('users AS initiators', 'transfers.initiator_id', '=', 'initiators.id')
+        ->join('users AS patients', 'transfers.patient_id', '=', 'patients.id')
+        ->leftJoin('infrastructures AS from_instrastructures', 'transfers.from_infrastructure_id', '=', 'from_instrastructures.id')
+        ->join('infrastructures AS to_instrastructures', 'transfers.to_infrastructure_id', '=', 'to_instrastructures.id')
+        ->when($status == 'pending', function($query){
+            return $query->where('transfers.to_infrastructure_id',auth()->user()->infrastructure_id);
+        })
+        ->when($status == 'initiated', function($query){
+            return $query->where('transfers.from_infrastructure_id',auth()->user()->infrastructure_id);
+        })
+        ->when($status == 'approved', function($query){
+            return $query->where('transfers.status','success')->where(function($q){
+                return $q->where('transfers.to_infrastructure_id',auth()->user()->infrastructure_id)
+                ->orWhere('transfers.from_infrastructure_id',auth()->user()->infrastructure_id);
+            });
+        })->when($status == 'refused', function($query){
+            return $query->where('transfers.status','failed')->where(function($q){
+                return $q->where('transfers.to_infrastructure_id',auth()->user()->infrastructure_id)
+                ->orWhere('transfers.from_infrastructure_id',auth()->user()->infrastructure_id);
+            });;
+        });
+        return DataTables::of($transfers)
+                    ->editColumn('status', function($data){
+                        return '<span class="text-capitalize custom-badge '.($data->status == 'pending' ? 'status-orange':($data->status == 'success' ? 'status-green':'status-red')).'">'.$data->status.'</span>';
+                    })
+                    ->addColumn('action', function($data){
+                        return '
+                        <div class="dropdown dropdown-action">
+                            <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" href="/infrastructure/transfer/'.$data->id.'/edit"><i class="fa fa-pencil m-r-5"></i> Edit</a>
+                                <a class="dropdown-item" href="#" onclick="event.preventDefault(); deleteTransfer('.$data->id.');"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
                             </div>
                         </div>';
                     })
@@ -117,6 +169,7 @@ class DataTableController extends Controller
                     <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
                     <div class="dropdown-menu dropdown-menu-right">
                         <a class="dropdown-item" href="/infrastructure/'.($data->role_name == 'Doctor'? 'doctor':'staff').'/'.$data->id.'/edit"><i class="fa fa-pencil m-r-5"></i> Edit</a>
+                        <a class="dropdown-item" href="/infrastructure/'.($data->role_name == 'Doctor'? 'doctor':'staff').'/'.$data->id.'"><i class="fa fa-eye m-r-5"></i> View</a>
                         <a class="dropdown-item" href="#" onclick="event.preventDefault(); deleteStaff('.$data->user_id.');"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
                     </div>
                 </div>';

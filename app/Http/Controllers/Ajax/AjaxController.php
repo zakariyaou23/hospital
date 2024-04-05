@@ -16,6 +16,7 @@ class AjaxController extends Controller
     }
 
     public function getDoctorsPerDepartment(Request $request){
+        $infrastructure = $request->get('infrastructure');
         $doctors = DB::table('users')
         ->select([
             DB::raw('IF(users.last_name IS NOT NULL, CONCAT(users.first_name, " ", users.last_name), users.first_name) AS name'),
@@ -23,8 +24,10 @@ class AjaxController extends Controller
         ])
         ->join('staffs','users.id','=','staffs.user_id')
         ->where('users.role_id', 4)
-        ->where('users.infrastructure_id',$request->get('infrastructure'))
         ->where('staffs.department_id',$request->get('department'))
+        ->when($infrastructure, function ($query, $infrastructure){
+            return $query->where('users.infrastructure_id', $infrastructure);
+        })
         ->pluck('name','id');
         return response()->json($doctors);
     }

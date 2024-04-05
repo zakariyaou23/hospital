@@ -387,55 +387,70 @@
                         sint consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias
                         ea. Quia fugiat sit in iste officiis commodi quidem hic quas.</p>
                 </div>
-
-                <form action="forms/appointment.php" method="post" role="form" class="php-email-form"
+                <div id="ajaxAlert"></div>
+                <form id="appointmentForm" action="#" method="post" role="form" class="php-email-form"
                     data-aos="fade-up" data-aos-delay="100">
+                    @csrf
                     <div class="row">
                         <div class="col-md-4 form-group">
-                            <input type="text" name="name" class="form-control" id="name"
-                                placeholder="Your Name" required>
+                            <input type="text" name="first_name" class="form-control" id="first_name"
+                                placeholder="First Name" required>
+                        </div>
+                        <div class="col-md-4 form-group mt-3 mt-md-0">
+                            <input type="text" name="last_name" class="form-control" id="last_name"
+                                placeholder="Last Name (Optional)">
                         </div>
                         <div class="col-md-4 form-group mt-3 mt-md-0">
                             <input type="email" class="form-control" name="email" id="email"
                                 placeholder="Your Email" required>
                         </div>
-                        <div class="col-md-4 form-group mt-3 mt-md-0">
-                            <input type="tel" class="form-control" name="phone" id="phone"
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 form-group mt-3">
+                            <input type="tel" class="form-control" name="telephone" id="phone"
                                 placeholder="Your Phone" required>
+                        </div>
+                        <div class="col-md-4 form-group mt-3">
+                            <select name="gender" id="gender" class="form-select">
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 form-group mt-3">
+                            <input type="text" class="form-control" name="address" id="address"
+                                placeholder="Your Address" required>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4 form-group mt-3">
-                            <input type="datetime" name="date" class="form-control datepicker" id="date"
+                            <input type="date" name="date" class="form-control" id="date"
                                 placeholder="Appointment Date" required>
                         </div>
                         <div class="col-md-4 form-group mt-3">
                             <select name="department" id="department" class="form-select">
                                 <option value="">Select Department</option>
-                                <option value="Department 1">Department 1</option>
-                                <option value="Department 2">Department 2</option>
-                                <option value="Department 3">Department 3</option>
+                                @foreach ($departments as $id => $name )
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="col-md-4 form-group mt-3">
                             <select name="doctor" id="doctor" class="form-select">
                                 <option value="">Select Doctor</option>
-                                <option value="Doctor 1">Doctor 1</option>
-                                <option value="Doctor 2">Doctor 2</option>
-                                <option value="Doctor 3">Doctor 3</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="form-group mt-3">
-                        <textarea class="form-control" name="message" rows="5" placeholder="Message (Optional)"></textarea>
+                        <textarea class="form-control" name="description" rows="5" placeholder="Message (Optional)"></textarea>
                     </div>
                     <div class="my-3">
                         <div class="loading">Loading</div>
                         <div class="error-message"></div>
                         <div class="sent-message">Your appointment request has been sent successfully. Thank you!</div>
                     </div>
-                    <div class="text-center"><button type="submit">Make an Appointment</button></div>
+                    <div class="text-center"><button id="submitButton" type="submit">Make an Appointment</button></div>
                 </form>
 
             </div>
@@ -755,102 +770,15 @@
                         <div class="swiper-slide"><a class="gallery-lightbox"
                                 href="/guests/img/gallery/gallery-7.jpg"><img src="/guests/img/gallery/gallery-7.jpg"
                                     class="img-fluid" alt=""></a></div>
-                        <div class="swiper-slide"><a class="gallery-lightbox"
+                        {{-- <div class="swiper-slide"><a class="gallery-lightbox"
                                 href="/guests/img/gallery/gallery-8.jpg"><img src="/guests/img/gallery/gallery-8.jpg"
-                                    class="img-fluid" alt=""></a></div>
+                                    class="img-fluid" alt=""></a></div> --}}
                     </div>
                     <div class="swiper-pagination"></div>
                 </div>
 
             </div>
-        </section><!-- End Gallery Section -->
-
-        <!-- ======= Pricing Section ======= -->
-        <section id="pricing" class="pricing">
-            <div class="container" data-aos="fade-up">
-
-                <div class="section-title">
-                    <h2>Pricing</h2>
-                    <p>Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. Sit
-                        sint consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias
-                        ea. Quia fugiat sit in iste officiis commodi quidem hic quas.</p>
-                </div>
-
-                <div class="row">
-
-                    <div class="col-lg-3 col-md-6">
-                        <div class="box" data-aos="fade-up" data-aos-delay="100">
-                            <h3>Free</h3>
-                            <h4><sup>$</sup>0<span> / month</span></h4>
-                            <ul>
-                                <li>Aida dere</li>
-                                <li>Nec feugiat nisl</li>
-                                <li>Nulla at volutpat dola</li>
-                                <li class="na">Pharetra massa</li>
-                                <li class="na">Massa ultricies mi</li>
-                            </ul>
-                            <div class="btn-wrap">
-                                <a href="#" class="btn-buy">Buy Now</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-3 col-md-6 mt-4 mt-md-0">
-                        <div class="box featured" data-aos="fade-up" data-aos-delay="200">
-                            <h3>Business</h3>
-                            <h4><sup>$</sup>19<span> / month</span></h4>
-                            <ul>
-                                <li>Aida dere</li>
-                                <li>Nec feugiat nisl</li>
-                                <li>Nulla at volutpat dola</li>
-                                <li>Pharetra massa</li>
-                                <li class="na">Massa ultricies mi</li>
-                            </ul>
-                            <div class="btn-wrap">
-                                <a href="#" class="btn-buy">Buy Now</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-3 col-md-6 mt-4 mt-lg-0">
-                        <div class="box" data-aos="fade-up" data-aos-delay="300">
-                            <h3>Developer</h3>
-                            <h4><sup>$</sup>29<span> / month</span></h4>
-                            <ul>
-                                <li>Aida dere</li>
-                                <li>Nec feugiat nisl</li>
-                                <li>Nulla at volutpat dola</li>
-                                <li>Pharetra massa</li>
-                                <li>Massa ultricies mi</li>
-                            </ul>
-                            <div class="btn-wrap">
-                                <a href="#" class="btn-buy">Buy Now</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-3 col-md-6 mt-4 mt-lg-0">
-                        <div class="box" data-aos="fade-up" data-aos-delay="400">
-                            <span class="advanced">Advanced</span>
-                            <h3>Ultimate</h3>
-                            <h4><sup>$</sup>49<span> / month</span></h4>
-                            <ul>
-                                <li>Aida dere</li>
-                                <li>Nec feugiat nisl</li>
-                                <li>Nulla at volutpat dola</li>
-                                <li>Pharetra massa</li>
-                                <li>Massa ultricies mi</li>
-                            </ul>
-                            <div class="btn-wrap">
-                                <a href="#" class="btn-buy">Buy Now</a>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-        </section><!-- End Pricing Section -->
+        </section>
 
         <!-- ======= Frequently Asked Questioins Section ======= -->
         <section id="faq" class="faq section-bg">
@@ -987,21 +915,21 @@
                                 <div class="info-box">
                                     <i class="bx bx-map"></i>
                                     <h3>Our Address</h3>
-                                    <p>A108 Adam Street, New York, NY 535022</p>
+                                    <p>Logbessou, Douala, Cameroom</p>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="info-box mt-4">
                                     <i class="bx bx-envelope"></i>
                                     <h3>Email Us</h3>
-                                    <p>info@example.com<br>contact@example.com</p>
+                                    <p>aissa@medicio.com<br>contact@medicio.com</p>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="info-box mt-4">
                                     <i class="bx bx-phone-call"></i>
                                     <h3>Call Us</h3>
-                                    <p>+1 5589 55488 55<br>+1 6678 254445 41</p>
+                                    <p>+237 677 777 777<br>+237 699 999 999</p>
                                 </div>
                             </div>
                         </div>
@@ -1009,7 +937,7 @@
                     </div>
 
                     <div class="col-lg-6">
-                        <form action="forms/contact.php" method="post" role="form" class="php-email-form">
+                        <form action="#" method="post" role="form" class="php-email-form">
                             <div class="row">
                                 <div class="col-md-6 form-group">
                                     <input type="text" name="name" class="form-control" id="name"
@@ -1118,6 +1046,8 @@
             class="bi bi-arrow-up-short"></i></a>
 
     <!-- Vendor JS Files -->
+    <script src="/adminlte/plugins/jquery/jquery.min.js"></script>
+    <script src="/adminlte/plugins/toastr/toastr.min.js"></script>
     <script src="/guests/vendor/purecounter/purecounter_vanilla.js"></script>
     <script src="/guests/vendor/aos/aos.js"></script>
     <script src="/guests/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -1127,6 +1057,63 @@
 
     <!-- Template Main JS File -->
     <script src="/guests/js/main.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('#submitButton').click(function(e){
+            $("#submitButton").prop('disabled',true);
+            e.preventDefault();
+            $('.loading').addClass('d-block');
+            $.ajax({
+                data: $('#appointmentForm').serialize(),
+                url: "{{ route('take.appointment') }}",
+                type: "POST",
+                dataType: 'json',
+                success: function (res) {
+                    console.log(res);
+                    $('#ajaxAlert').empty();
+                    $('.sent-message').addClass('d-block');
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    $("#submitButton").prop('disabled',false);
+                    if(xhr.status == 403){
+                        $('#ajaxAlert').empty();
+                        var err = xhr.responseJSON;
+                        var resLength = Object.keys(err).length;
+                        for (var i = 0; i < resLength; i++){
+                            $('#ajaxAlert').append('<div class="alert alert-danger">'+err[i]+'</div>')
+                        }
+                    }else{
+                        console.log(xhr.responseText);
+                    }
+                }
+            });
+            $('.loading').removeClass('d-block');
+        });
+            $('#department').change(function(){
+                var department = $(this).val();
+                if(department){
+                    $.ajax({
+                    type:"GET",
+                    url:"{{route('ajax.select.doctors')}}?department="+department,
+                    success:function(res){
+                        var resLength = Object.keys(res).length;
+                        $("#doctor").empty();
+                        $("#doctor").append('<option value="">Select Doctor</option>');
+                        if(res && (resLength > 0)){
+                            $.each(res,function(key,value){
+                                $("#doctor").append('<option value="'+key+'">'+value+'</option>');
+                            });
+                        }
+                    }
+                    });
+                }else{
+                    $("#doctor").empty();
+                    $("#doctor").append('<option value="">Select Doctor</option>');
+                }
+            });
+        });
+    </script>
 
 </body>
 

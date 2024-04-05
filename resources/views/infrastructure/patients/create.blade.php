@@ -163,8 +163,8 @@
                                 @enderror
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="tensionField">Tension(Pa) <span class="text-danger">*</span></label>
-                                <input type="number" value="{{ old('tension') }}" class="form-control @error('tension') is-invalid @enderror" id="tensionField" name="tension">
+                                <label for="tensionField">Tension(mm Hg) <span class="text-danger">*</span></label>
+                                <input type="text" value="{{ old('tension') }}" class="form-control @error('tension') is-invalid @enderror" id="tensionField" name="tension">
                                 @error('tension')
                                     <div class="invalid-feedback">
                                       {{ $message }}

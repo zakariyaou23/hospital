@@ -15,6 +15,9 @@
                 <li class="{{ request()->routeIs('infrastructure.appointment.*') ? 'active':'' }}">
                     <a href="/infrastructure/appointment"><i class="fa fa-calendar"></i> <span>Appointments</span></a>
                 </li>
+                <li class="{{ request()->routeIs('infrastructure.transfer.*') ? 'active':'' }}">
+                    <a href="/infrastructure/transfer"><i class="fa fa-random"></i> <span>Transfers</span></a>
+                </li>
                 {{-- <li>
                     <a href="schedule.html"><i class="fa fa-calendar-check-o"></i> <span>Doctor Schedule</span></a>
                 </li> --}}
