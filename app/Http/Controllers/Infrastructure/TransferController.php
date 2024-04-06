@@ -29,7 +29,7 @@ class TransferController extends Controller
     public function create()
     {
         $patients = User::select([
-            DB::raw('IF(last_name IS NOT NULL, CONCAT(first_name, " ", last_name), first_name) AS name'),
+            DB::raw('CASE WHEN last_name IS NOT NULL THEN CONCAT(first_name, \' \', last_name) ELSE first_name END AS name'),
             'id'
         ])
         ->where('role_id',3)

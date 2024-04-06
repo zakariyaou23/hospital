@@ -31,7 +31,7 @@ class InfrastructureController extends Controller
         $subdivisions = DB::table('subdivisions')
             ->select([
                 'subdivisions.id',
-                DB::raw('CONCAT(subdivisions.name,", ",divisions.name,", ",regions.name) as name')
+                DB::raw('CONCAT(subdivisions.name,\', \',divisions.name,\', \',regions.name) as name')
             ])
             ->join('divisions','subdivisions.division_id','=','divisions.id')
             ->join('regions','divisions.region_id','=','regions.id')
@@ -92,7 +92,7 @@ class InfrastructureController extends Controller
         $subdivisions = DB::table('subdivisions')
             ->select([
                 'subdivisions.id',
-                DB::raw('CONCAT(subdivisions.name,", ",divisions.name,", ",regions.name) as name')
+                DB::raw('CONCAT(subdivisions.name,\', \',divisions.name,\', \',regions.name) as name')
             ])
             ->join('divisions','subdivisions.division_id','=','divisions.id')
             ->join('regions','divisions.region_id','=','regions.id')

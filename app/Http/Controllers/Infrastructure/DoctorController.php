@@ -20,7 +20,7 @@ class DoctorController extends Controller
     public function index()
     {
         $doctors = User::select([
-            DB::raw('IF(last_name IS NOT NULL, CONCAT(first_name, " ", last_name), first_name) AS name'),
+            DB::raw('CASE WHEN last_name IS NOT NULL THEN CONCAT(first_name, \' \', last_name) ELSE first_name END AS name'),
             'departments.name as department_name',
             'address',
             'photo',
@@ -44,7 +44,7 @@ class DoctorController extends Controller
         $subdivisions = DB::table('subdivisions')
             ->select([
                 'subdivisions.id',
-                DB::raw('CONCAT(subdivisions.name,", ",divisions.name,", ",regions.name) as name')
+                DB::raw('CONCAT(subdivisions.name,\', \',divisions.name,\', \',regions.name) as name')
             ])
             ->join('divisions','subdivisions.division_id','=','divisions.id')
             ->join('regions','divisions.region_id','=','regions.id')
@@ -143,7 +143,7 @@ class DoctorController extends Controller
         $subdivisions = DB::table('subdivisions')
             ->select([
                 'subdivisions.id',
-                DB::raw('CONCAT(subdivisions.name,", ",divisions.name,", ",regions.name) as name')
+                DB::raw('CONCAT(subdivisions.name,\', \',divisions.name,\', \',regions.name) as name')
             ])
             ->join('divisions','subdivisions.division_id','=','divisions.id')
             ->join('regions','divisions.region_id','=','regions.id')

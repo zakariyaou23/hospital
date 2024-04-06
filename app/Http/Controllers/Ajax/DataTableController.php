@@ -16,7 +16,7 @@ class DataTableController extends Controller
 {
     public function getInfrastructurePatients(){
         $patients = User::select([
-            DB::raw('IF(last_name IS NOT NULL, CONCAT(first_name, " ", last_name), first_name) AS name'),
+            DB::raw('CASE WHEN last_name IS NOT NULL THEN CONCAT(first_name, \' \', last_name) ELSE first_name END AS name'),
             'date_of_birth',
             'telephone',
             'email',
@@ -44,8 +44,8 @@ class DataTableController extends Controller
 
     public function getInfrastructureAppointments(){
         $appointments = Appointment::select([
-            DB::raw('IF(doctors.last_name IS NOT NULL, CONCAT(doctors.first_name, " ", doctors.last_name), doctors.first_name) AS doctor_name'),
-            DB::raw('IF(patients.last_name IS NOT NULL, CONCAT(patients.first_name, " ", patients.last_name), patients.first_name) AS patient_name'),
+            DB::raw('CASE WHEN doctors.last_name IS NOT NULL THEN CONCAT(doctors.first_name, \' \', doctors.last_name) ELSE doctors.first_name END AS doctor_name'),
+            DB::raw('CASE WHEN patients.last_name IS NOT NULL THEN CONCAT(patients.first_name, \' \', patients.last_name) ELSE patients.first_name END AS patient_name'),
             'appointments.*',
             'departments.name as department_name'
         ])
@@ -74,9 +74,9 @@ class DataTableController extends Controller
     public function getInfrastructureTransfers(Request $request){
         $status = $request->get('status');
         $transfers = Transfer::select([
-            DB::raw('IF(initiators.last_name IS NOT NULL, CONCAT(initiators.first_name, " ", initiators.last_name), initiators.first_name) AS initiator_name'),
-            DB::raw('IF(recipients.last_name IS NOT NULL, CONCAT(recipients.first_name, " ", recipients.last_name), recipients.first_name) AS recipient_name'),
-            DB::raw('IF(patients.last_name IS NOT NULL, CONCAT(patients.first_name, " ", patients.last_name), patients.first_name) AS patient_name'),
+            DB::raw('CASE WHEN initiators.last_name IS NOT NULL THEN CONCAT(initiators.first_name, \' \', initiators.last_name) ELSE initiators.first_name END AS initiator_name'),
+            DB::raw('CASE WHEN recipients.last_name IS NOT NULL THEN CONCAT(recipients.first_name, \' \', recipients.last_name) ELSE recipients.first_name END AS recipient_name'),
+            DB::raw('CASE WHEN patients.last_name IS NOT NULL THEN CONCAT(patients.first_name, \' \', patients.last_name) ELSE patients.first_name END AS patient_name'),
             'transfers.*',
             'from_instrastructures.name as from_instrastructure',
             'to_instrastructures.name as to_instrastructure',
@@ -148,7 +148,7 @@ class DataTableController extends Controller
             'staffs.id',
             'staffs.user_id',
             'staffs.joining_date',
-            DB::raw('IF(users.last_name IS NOT NULL, CONCAT(users.first_name, " ", users.last_name), users.first_name) AS name'),
+            DB::raw('CASE WHEN users.last_name IS NOT NULL THEN CONCAT(users.first_name, \' \', users.last_name) ELSE users.first_name END AS name'),
             'users.telephone',
             'users.email',
             'roles.name as role_name'
@@ -182,7 +182,7 @@ class DataTableController extends Controller
         $infrastructure = $request->get('infrastructure');
         $staffs = Staff::select([
             'staffs.id as staff_id',
-            DB::raw('IF(users.last_name IS NOT NULL, CONCAT(users.first_name, " ", users.last_name), users.first_name) AS name'),
+            DB::raw('CASE WHEN users.last_name IS NOT NULL THEN CONCAT(users.first_name, \' \', users.last_name) ELSE users.first_name END AS name'),
             'users.address',
             'users.telephone',
             'users.id',

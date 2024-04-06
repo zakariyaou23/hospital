@@ -19,7 +19,7 @@ class AjaxController extends Controller
         $infrastructure = $request->get('infrastructure');
         $doctors = DB::table('users')
         ->select([
-            DB::raw('IF(users.last_name IS NOT NULL, CONCAT(users.first_name, " ", users.last_name), users.first_name) AS name'),
+            DB::raw('CASE WHEN users.last_name IS NOT NULL THEN CONCAT(users.first_name, \' \', users.last_name) ELSE users.first_name END AS name'),
             'users.id as id'
         ])
         ->join('staffs','users.id','=','staffs.user_id')
