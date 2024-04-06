@@ -32,7 +32,16 @@ class HomeController extends Controller
             $data['laboratories'] = $infrastructures->where('type','laboratoty')->count();
             return view('admin.dashboard', compact('data'));
         }else{
-            return view('infrastructure.dashboard');
+            $counts = [];
+            if(auth()->user()->role_id == 3){
+                $counts['doctors'] = DB::table('users')->where('role_id',4)->count();
+                $counts['patients'] = DB::table('users')->where('role_id',3)->count();
+            }else{
+                $counts['doctors'] = DB::table('users')->where('role_id',4)
+                    ->where('infrastructure_id',auth()->user()->infrastructure_id)->count();
+                $counts['patients'] = DB::table('users')->where('role_id',3)->where('infrastructure_id',auth()->user()->infrastructure_id)->count();
+            }
+            return view('infrastructure.dashboard', compact('counts'));
         }
     }
 

@@ -61,7 +61,7 @@
                 </div>
                 <div class="form-group">
                     <label>Note</label>
-                    <textarea cols="30" rows="4" class="form-control @error('note') is-invalid @enderror">{{ old('note') }}</textarea>
+                    <textarea cols="30" name="note" rows="4" class="form-control @error('note') is-invalid @enderror">{{ old('note') }}</textarea>
                     @error('note')
                         <div class="invalid-feedback">
                             {{ $message }}

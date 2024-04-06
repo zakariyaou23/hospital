@@ -28,14 +28,18 @@ class AppointmentController extends Controller
      */
     public function create()
     {
-        $patients = User::select([
-            DB::raw('CASE WHEN last_name IS NOT NULL THEN CONCAT(first_name, \' \', last_name) ELSE first_name END AS name'),
-            'id'
-        ])
-        ->where('role_id',3)
-        ->where('infrastructure_id',auth()->user()->infrastructure_id)
-        ->pluck('name','id')
-        ->toArray();
+        $patients = [];
+        if(auth()->user()->role_id != 3){
+            $patients = User::select([
+                DB::raw('CASE WHEN last_name IS NOT NULL THEN CONCAT(first_name, \' \', last_name) ELSE first_name END AS name'),
+                'id'
+            ])
+            ->where('role_id',3)
+            ->where('infrastructure_id',auth()->user()->infrastructure_id)
+            ->pluck('name','id')
+            ->toArray();
+        }
+
         $departments = DB::table('departments')
         ->pluck('name','id')
         ->toArray();
@@ -89,6 +93,9 @@ class AppointmentController extends Controller
      */
     public function edit($id)
     {
+        if(auth()->user()->role_id == 3){
+            abort(403,"Not authorized");
+        }
         $appointment = Appointment::findOrFail($id);
         $users =  User::select([
             DB::raw('CASE WHEN last_name IS NOT NULL THEN CONCAT(first_name, \' \', last_name) ELSE first_name END AS name'),
@@ -120,6 +127,9 @@ class AppointmentController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if(auth()->user()->role_id == 3){
+            abort(403,"Not authorized");
+        }
         $request->validate([
             'patient' => 'required|exists:users,id',
             'doctor' => 'required|exists:users,id',

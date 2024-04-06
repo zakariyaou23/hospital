@@ -1,14 +1,27 @@
 <div class="sidebar" id="sidebar">
     <div class="sidebar-inner slimscroll">
         <div id="sidebar-menu" class="sidebar-menu">
+            @if (auth()->user()->role_id == 3)
             <ul>
                 <li class="menu-title">Main</li>
                 <li class="{{ request()->routeIs('home') ? 'active':'' }}">
                     <a href="/home"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a>
                 </li>
+                <li class="{{ request()->routeIs('infrastructure.appointment.*') ? 'active':'' }}">
+                    <a href="/infrastructure/appointment"><i class="fa fa-calendar"></i> <span>Appointments</span></a>
+                </li>
+            </ul>
+            @else
+            <ul>
+                <li class="menu-title">Main</li>
+                <li class="{{ request()->routeIs('home') ? 'active':'' }}">
+                    <a href="/home"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a>
+                </li>
+                @if (auth()->user()->role_id != 4)
                 <li class="{{ request()->routeIs('infrastructure.doctor.*') ? 'active':'' }}">
                     <a href="/infrastructure/doctor"><i class="fa fa-user-md"></i> <span>Doctors</span></a>
                 </li>
+                @endif
                 <li class="{{ request()->routeIs('infrastructure.patient.*') ? 'active':'' }}">
                     <a href="/infrastructure/patient"><i class="fa fa-wheelchair"></i> <span>Patients</span></a>
                 </li>
@@ -21,6 +34,7 @@
                 {{-- <li>
                     <a href="schedule.html"><i class="fa fa-calendar-check-o"></i> <span>Doctor Schedule</span></a>
                 </li> --}}
+                @if (auth()->user()->role_id != 4)
                 <li class="{{ request()->routeIs('infrastructure.department.*') ? 'active':'' }}">
                     <a href="/infrastructure/department"><i class="fa fa-hospital-o"></i> <span>Departments</span></a>
                 </li>
@@ -40,7 +54,8 @@
                         <li><a class="{{ request()->routeIs('infrastructure.expense.*') ? 'active':'' }}" href="/infrastructure/expense">Expenses</a></li>
                     </ul>
                 </li>
-                <li class="submenu">
+                @endif
+                {{-- <li class="submenu">
                     <a href="#"><i class="fa fa-book"></i> <span> Payroll </span> <span class="menu-arrow"></span></a>
                     <ul style="display: none;">
                         <li><a href="salary.html"> Employee Salary </a></li>
@@ -87,8 +102,9 @@
                         <li><a href="expense-reports.html"> Expense Report </a></li>
                         <li><a href="invoice-reports.html"> Invoice Report </a></li>
                     </ul>
-                </li>
+                </li> --}}
             </ul>
+            @endif
         </div>
     </div>
 </div>

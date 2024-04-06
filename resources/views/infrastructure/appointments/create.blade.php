@@ -13,6 +13,10 @@
         <div class="col-lg-8 offset-lg-2">
             <form action="{{ route('infrastructure.appointment.store') }}" method="POST">
                 @csrf
+                @if (auth()->user()->role_id == 3)
+                    <input type="hidden" name="patient" value="{{ auth()->user()->id }}">
+                    <input type="hidden" id="infrastructure" value="">
+                @else
                 <input type="hidden" name="infrastructure" id="infrastructure" value="{{ auth()->user()->infrastructure_id }}">
                 <div class="row">
                     <div class="col-md-12">
@@ -32,6 +36,7 @@
                         </div>
                     </div>
                 </div>
+                @endif
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">

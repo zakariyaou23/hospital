@@ -52,7 +52,6 @@ class TransferController extends Controller
     {
         $request->validate([
             'patient' => 'required|exists:users,id',
-            'doctor' => 'required|exists:users,id',
             'to_infrastructure' => 'required|exists:infrastructures,id',
             'note' => 'required',
         ]);
@@ -86,7 +85,8 @@ class TransferController extends Controller
      */
     public function edit($id)
     {
-        //
+        $transfer = Transfer::find($id);
+        return view('infrastructure.transfers.edit', compact('transfer'));
     }
 
     /**
@@ -99,7 +99,7 @@ class TransferController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'status' => ['required',Rule::in(['pending','success','failed'])],
+            'status' => ['required',Rule::in(['success','failed'])],
             'reason' => 'required_if:status,failed',
         ]);
         Transfer::where('id',$id)->update([

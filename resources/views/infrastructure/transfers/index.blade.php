@@ -26,7 +26,7 @@
                 <div class="tab-content">
                     <div class="tab-pane show active" id="top-tab1">
                         <div class="table-responsive">
-                            <table id="appointmentTable" class="table table-striped custom-table">
+                            <table id="pendingTable" class="table table-striped custom-table " style="width:100%;">
                                 <thead>
                                     <tr>
                                         <th>Transfer ID</th>
@@ -46,15 +46,15 @@
                     </div>
                     <div class="tab-pane" id="top-tab2">
                         <div class="table-responsive">
-                            <table id="appointmentTable2" class="table table-striped custom-table">
+                            <table id="initiatedTable" class="table table-striped custom-table" style="width:100%;">
                                 <thead>
                                     <tr>
                                         <th>Transfer ID</th>
                                         <th>Patient Name</th>
-                                        <th>Doctor Name</th>
-                                        <th>Department</th>
-                                        <th>Appointment Date</th>
-                                        <th>Appointment Time</th>
+                                        <th>From</th>
+                                        <th>To</th>
+                                        <th>Initiator</th>
+                                        <th>Recipient</th>
                                         <th>Status</th>
                                         <th class="text-right">Action</th>
                                     </tr>
@@ -66,15 +66,15 @@
                     </div>
                     <div class="tab-pane" id="top-tab3">
                         <div class="table-responsive">
-                            <table id="appointmentTable3" class="table table-striped custom-table">
+                            <table id="approvedTable" class="table table-striped custom-table" style="width:100%;">
                                 <thead>
                                     <tr>
                                         <th>Transfer ID</th>
                                         <th>Patient Name</th>
-                                        <th>Doctor Name</th>
-                                        <th>Department</th>
-                                        <th>Appointment Date</th>
-                                        <th>Appointment Time</th>
+                                        <th>From</th>
+                                        <th>To</th>
+                                        <th>Initiator</th>
+                                        <th>Recipient</th>
                                         <th>Status</th>
                                         <th class="text-right">Action</th>
                                     </tr>
@@ -86,15 +86,15 @@
                     </div>
                     <div class="tab-pane" id="top-tab4">
                         <div class="table-responsive">
-                            <table id="appointmentTable4" class="table table-striped custom-table">
+                            <table id="refusedTable" class="table table-striped custom-table" style="width:100%;">
                                 <thead>
                                     <tr>
                                         <th>Transfer ID</th>
                                         <th>Patient Name</th>
-                                        <th>Doctor Name</th>
-                                        <th>Department</th>
-                                        <th>Appointment Date</th>
-                                        <th>Appointment Time</th>
+                                        <th>From</th>
+                                        <th>To</th>
+                                        <th>Initiator</th>
+                                        <th>Recipient</th>
                                         <th>Status</th>
                                         <th class="text-right">Action</th>
                                     </tr>
@@ -137,7 +137,7 @@
             $('#deleteForm').attr('action','#');
         }
         $(function(){
-            $('#transferTable').DataTable({
+            $('#pendingTable').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
@@ -167,6 +167,141 @@
                     {
                         data: 'time',
                         name: 'time'
+                    },
+                    {
+                        data: 'status',
+                        name: 'status',
+                        orderable: false,
+                        searchable: false,
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false,
+                    }
+                ]
+            });
+            $('#initiatedTable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                url: "{{ route('ajax.infrastructure.transfers') }}?status=initiated",
+                },
+                columns: [
+                    {
+                        data: 'id',
+                        name: 'transfers.id'
+                    },
+                    {
+                        data: 'patient_name',
+                        name: 'patients.first_name'
+                    },
+                    {
+                        data: 'from_instrastructure',
+                        name: 'from_instrastructures.name'
+                    },
+                    {
+                        data: 'to_instrastructure',
+                        name: 'to_instrastructures.name'
+                    },
+                    {
+                        data: 'initiator_name',
+                        name: 'initiators.first_name'
+                    },
+                    {
+                        data: 'recipient_name',
+                        name: 'recipients.first_name'
+                    },
+                    {
+                        data: 'status',
+                        name: 'status',
+                        orderable: false,
+                        searchable: false,
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false,
+                    }
+                ]
+            });
+            $('#approvedTable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                url: "{{ route('ajax.infrastructure.transfers') }}?status=approved",
+                },
+                columns: [
+                    {
+                        data: 'id',
+                        name: 'transfers.id'
+                    },
+                    {
+                        data: 'patient_name',
+                        name: 'patients.first_name'
+                    },
+                    {
+                        data: 'from_instrastructure',
+                        name: 'from_instrastructures.name'
+                    },
+                    {
+                        data: 'to_instrastructure',
+                        name: 'to_instrastructures.name'
+                    },
+                    {
+                        data: 'initiator_name',
+                        name: 'initiators.first_name'
+                    },
+                    {
+                        data: 'recipient_name',
+                        name: 'recipients.first_name'
+                    },
+                    {
+                        data: 'status',
+                        name: 'status',
+                        orderable: false,
+                        searchable: false,
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        orderable: false,
+                        searchable: false,
+                    }
+                ]
+            });
+            $('#refusedTable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                url: "{{ route('ajax.infrastructure.transfers') }}?status=refused",
+                },
+                columns: [
+                    {
+                        data: 'id',
+                        name: 'transfers.id'
+                    },
+                    {
+                        data: 'patient_name',
+                        name: 'patients.first_name'
+                    },
+                    {
+                        data: 'from_instrastructure',
+                        name: 'from_instrastructures.name'
+                    },
+                    {
+                        data: 'to_instrastructure',
+                        name: 'to_instrastructures.name'
+                    },
+                    {
+                        data: 'initiator_name',
+                        name: 'initiators.first_name'
+                    },
+                    {
+                        data: 'recipient_name',
+                        name: 'recipients.first_name'
                     },
                     {
                         data: 'status',

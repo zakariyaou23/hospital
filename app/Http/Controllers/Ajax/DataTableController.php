@@ -52,12 +52,26 @@ class DataTableController extends Controller
         ->join('users AS doctors', 'appointments.doctor_id', '=', 'doctors.id')
         ->join('users AS patients', 'appointments.patient_id', '=', 'patients.id')
         ->join('departments', 'appointments.department_id', '=', 'departments.id')
-        ->where('doctors.infrastructure_id',auth()->user()->infrastructure_id);
+        ->when(auth()->user()->role_id == 3, function($query){
+            return $query->where('appointments.patient_id', auth()->user()->id);
+        })
+        ->when(auth()->user()->role_id != 3, function($query){
+            return $query->where('doctors.infrastructure_id',auth()->user()->infrastructure_id);
+        });
         return DataTables::of($appointments)
                     ->editColumn('status', function($data){
                         return '<span class="text-capitalize custom-badge '.($data->status == 'pending' ? 'status-orange':($data->status == 'approved' ? 'status-green':'status-red')).'">'.$data->status.'</span>';
                     })
                     ->addColumn('action', function($data){
+                        if(auth()->user()->role_id == 3){
+                            return '
+                        <div class="dropdown dropdown-action">
+                            <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <a class="dropdown-item" href="#" onclick="event.preventDefault(); deleteAppointment('.$data->id.');"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
+                            </div>
+                        </div>';
+                        }
                         return '
                         <div class="dropdown dropdown-action">
                             <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
@@ -107,7 +121,16 @@ class DataTableController extends Controller
                     ->editColumn('status', function($data){
                         return '<span class="text-capitalize custom-badge '.($data->status == 'pending' ? 'status-orange':($data->status == 'success' ? 'status-green':'status-red')).'">'.$data->status.'</span>';
                     })
-                    ->addColumn('action', function($data){
+                    ->addColumn('action', function($data) use ($status){
+                        if($data->status != 'pending' || $status == 'initiated'){
+                            return '
+                            <div class="dropdown dropdown-action">
+                                <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="#" onclick="event.preventDefault(); deleteTransfer('.$data->id.');"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
+                                </div>
+                            </div>';
+                        }
                         return '
                         <div class="dropdown dropdown-action">
                             <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
